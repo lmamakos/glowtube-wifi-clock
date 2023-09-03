@@ -51,6 +51,8 @@ private:
     FS &fs;
 
     bool _ntpEnabled;
+    const char *_wifi_ssid;
+    const char *_wifi_password;
 };
 
 #endif

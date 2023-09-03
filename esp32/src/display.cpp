@@ -8,13 +8,11 @@ Display::Display(FS &fs) : fs(fs)
 
 void Display::begin()
 {
-    Serial.print("Display::begin setting pinModes\n");
     pinMode(SR_LATCH_PIN, OUTPUT);
     pinMode(SR_DATA_PIN, OUTPUT);
     pinMode(SR_CLOCK_PIN, OUTPUT);
     pinMode(TFT_ENABLE_PIN, OUTPUT);
 
-    Serial.print("Display::begin init pins\n");
     digitalWrite(SR_DATA_PIN, LOW);
     digitalWrite(SR_CLOCK_PIN, LOW);
     digitalWrite(SR_LATCH_PIN, LOW);
@@ -73,7 +71,7 @@ void Display::drawTime(uint32_t time)
     uint8_t digits[6];
     uint8_t updateIndex = 0;
 
-    Serial.printf("drawTime: %06d\n", time);
+    // Serial.printf("drawTime: %06d\n", time);
     for (uint8_t i = 0; i < 6; i++)
     {
         digits[i] = time % 10;

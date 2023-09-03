@@ -14,6 +14,8 @@ WifiClock::WifiClock(Display &display, FS &fs)
       fs(fs)
 {
     _ntpEnabled = false;
+    _wifi_ssid = NULL;
+    _wifi_password = NULL;
 }
 
 void WifiClock::begin()
@@ -21,15 +23,28 @@ void WifiClock::begin()
     clockInstance = this;
     loadConfig(true);
 
-    /* WiFi.onEvent([](system_event_t *sys_event, wifi_prov_event_t *prov_event)
-                 { clockInstance->sync(); },
-                 SYSTEM_EVENT_STA_GOT_IP); */
+    if (_wifi_ssid && _wifi_password) {
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(_wifi_ssid, _wifi_password);
+        Serial.printf("Connecting to WiFi network %s %s ", _wifi_ssid, _wifi_password);
+        display.tft.printf("Conncting to WiFi network '%s' ", _wifi_ssid);
+    }
+    while (WiFi.status() != WL_CONNECTED) {
+        Serial.print(".");
+        display.tft.print(".");
+        delay(1000);
+    }
+    Serial.print("\nConnected. IP addr: "); Serial.println(WiFi.localIP());
+    display.tft.println("  Connected!  IP address:\n");
+    display.tft.println(WiFi.localIP());
 
     displayTime.attach(.2, []
                        { clockInstance->updateDisplay(); });
 
-//    setSyncProvider([]
-//                    { return RTC.get(); });
+    sync();     // launch an NTP sync request
+
+  //  setSyncProvider([]
+  //              { return RTC.get(); });
 }
 
 void WifiClock::sync()
@@ -37,8 +52,9 @@ void WifiClock::sync()
     if (_ntpEnabled && WiFi.status() == WL_CONNECTED && timeClient.update())
     {
         auto ntpTime = timeClient.getEpochTime();
-//        RTC.set(ntpTime);
+        // RTC.set(ntpTime);
         setTime(ntpTime);
+        Serial.print("NTP time set\n");
     }
 }
 
@@ -72,6 +88,12 @@ void WifiClock::loadConfig(bool first)
 
     DynamicJsonBuffer jsonBuffer;
     JsonObject &root = jsonBuffer.parseObject(json);
+
+    JsonObject &wifi = root["wifi"];
+    _wifi_ssid = wifi["ssid"];
+    _wifi_password = wifi["password"];
+    Serial.printf("config wifi=%s password=%s\n", _wifi_ssid, _wifi_password);
+
     JsonObject &ntp = root["ntp"];
     _ntpEnabled = ntp["enable"];
     if (_ntpEnabled)

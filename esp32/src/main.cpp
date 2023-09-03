@@ -1,21 +1,21 @@
 #include <Arduino.h>
 #include "hal.h"
-// #include <WiFi.h>
+#include <WiFi.h>
 #include <FastLED.h>
-// #include <ESPmDNS.h>
+#include <ESPmDNS.h>
 #include <SPIFFS.h>
 
 #include "display.h"
 #include "hal.h"
 #include "clock.h"
-// #include "web.h"
+#include "web.h"
 
 #define USE_FS SPIFFS
 
 Display display(USE_FS);
 
 WifiClock wificlock(display, USE_FS);
-// Web web(USE_FS, wificlock);
+Web web(USE_FS, wificlock);
 
 CRGB leds[NUM_LEDS];
 
@@ -42,20 +42,17 @@ void setup()
   fill_solid(leds, NUM_LEDS, CRGB::DarkOrange);
   FastLED.show();
 
-#if 0
-  MDNS.begin("wifi-clock");
-  MDNS.addService("http", "tcp", 80);
-
   WiFi.begin();
-#endif
+
+  
   display.onDigitColorChanged(onDigitColorChanged);
   USE_FS.begin();
   display.begin();
-  // wificlock.begin();
-#if 0
-  web.onDigitsChanged(onDigitsChanged);
+  wificlock.begin();
+//  web.onDigitsChanged(onDigitsChanged);
   web.begin();
-#endif
+  MDNS.begin("wifi-clock");
+  MDNS.addService("http", "tcp", 80);
   Serial.print("end setup()\n");
 }
 
@@ -64,8 +61,8 @@ void loop()
   static u_int32_t counter = 0;
 
   EVERY_N_MILLISECONDS(1000) {
-    Serial.printf("time %u\n", counter);
-    display.drawTime(counter++);
+//    Serial.printf("time %u\n", counter);
+    // display.drawTime(counter++);
   }
 
 }

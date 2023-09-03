@@ -2,8 +2,8 @@
 #define _DISPLAY_H_
 
 #include <Arduino.h>
-#include <TFT_eSPI.h>
 #include <FS.h>
+#include <TFT_eSPI.h>
 
 #define SELECT_NONE 0x81
 #define SELECT_ALL 0x80
@@ -27,10 +27,10 @@ public:
     void drawTime(uint32_t time);
     void onDigitColorChanged(OnDigitColorChanged colorChanged);
     void invalidateDigitCache();
+    void selectLcd(uint8_t index);
     TFT_eSPI tft;
 
 private:
-    void selectLcd(uint8_t index);
     void loadUpdate(uint8_t digit, LcdUpdate &update);
     void executeUpdate(LcdUpdate &update);
 
