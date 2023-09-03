@@ -1,0 +1,34 @@
+{
+    "wifi": {
+        "ssid": "WHY-FIE-FOE-FUM",
+        "password": "sooper-sekret"
+    },
+    "ntp": {
+        "enable": true,
+        "server": "10.200.0.1",
+        "updateInterval": 3600
+    },
+    "timezone": {
+        "offset": -300,
+        "dstEnable": true,
+        "dstStart": {
+            "abbrev": "EDT",
+            "week": 0,
+            "dow": 1,
+            "month": 3,
+            "hour": 2,
+            "offset": -240
+        },
+        "dstEnd": {
+            "abbrev": "EST",
+            "week": 0,
+            "dow": 1,
+            "month": 10,
+            "hour": 3,
+            "offset": -300
+        }
+    },
+    "led": {
+        "brightness": 255
+    }
+}
