@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.vhd": "vhdl",
         "*.tcc": "cpp",
         "fstream": "cpp",
         "functional": "cpp",
@@ -47,6 +48,9 @@
         "port.h": "c",
         "types.h": "c",
         "platform.h": "c",
-        "string_view": "cpp"
-    }
+        "string_view": "cpp",
+        "tft_espi_esp32.c": "cpp",
+        "ctype.h": "c"
+    },
+    "cmake.configureOnOpen": false
 }

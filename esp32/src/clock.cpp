@@ -4,6 +4,9 @@ WifiClock *clockInstance;
 
 TimeChangeRule rule;
 
+// RTC_DS3231 RTC;
+RTC_Millis RTC;   // just use software millisecond counter for now
+
 WifiClock::WifiClock(Display &display, FS &fs)
     : display(display),
       timeClient(ntpUDP),
@@ -18,15 +21,15 @@ void WifiClock::begin()
     clockInstance = this;
     loadConfig(true);
 
-    WiFi.onEvent([](system_event_t *sys_event, wifi_prov_event_t *prov_event)
+    /* WiFi.onEvent([](system_event_t *sys_event, wifi_prov_event_t *prov_event)
                  { clockInstance->sync(); },
-                 SYSTEM_EVENT_STA_GOT_IP);
+                 SYSTEM_EVENT_STA_GOT_IP); */
 
     displayTime.attach(.2, []
                        { clockInstance->updateDisplay(); });
 
-    setSyncProvider([]
-                    { return RTC.get(); });
+//    setSyncProvider([]
+//                    { return RTC.get(); });
 }
 
 void WifiClock::sync()
@@ -34,7 +37,7 @@ void WifiClock::sync()
     if (_ntpEnabled && WiFi.status() == WL_CONNECTED && timeClient.update())
     {
         auto ntpTime = timeClient.getEpochTime();
-        RTC.set(ntpTime);
+//        RTC.set(ntpTime);
         setTime(ntpTime);
     }
 }

@@ -8,21 +8,33 @@ Display::Display(FS &fs) : fs(fs)
 
 void Display::begin()
 {
+    Serial.print("Display::begin setting pinModes\n");
     pinMode(SR_LATCH_PIN, OUTPUT);
     pinMode(SR_DATA_PIN, OUTPUT);
     pinMode(SR_CLOCK_PIN, OUTPUT);
     pinMode(TFT_ENABLE_PIN, OUTPUT);
 
+    Serial.print("Display::begin init pins\n");
     digitalWrite(SR_DATA_PIN, LOW);
     digitalWrite(SR_CLOCK_PIN, LOW);
     digitalWrite(SR_LATCH_PIN, LOW);
     digitalWrite(TFT_ENABLE_PIN, HIGH);
 
+    Serial.print("Display::begin selectLcd\n");
     selectLcd(SELECT_ALL);
 
+    Serial.print("Display::begin tft.begin\n");
     tft.begin();
-    tft.fillScreen(TFT_BLACK);
+    Serial.print("Display::begin tft.fillscreen\n");
+    tft.fillScreen(TFT_DARKGREEN);
     invalidateDigitCache();
+    delay(5);
+    tft.fillScreen(TFT_BLACK);
+
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.setCursor(0, 0, 2);     // Font 2. 16 pixel high
+    tft.println("display begin..");
+    Serial.print("Display::begin returning\n");
 }
 
 void Display::invalidateDigitCache()
@@ -61,6 +73,7 @@ void Display::drawTime(uint32_t time)
     uint8_t digits[6];
     uint8_t updateIndex = 0;
 
+    Serial.printf("drawTime: %06d\n", time);
     for (uint8_t i = 0; i < 6; i++)
     {
         digits[i] = time % 10;
@@ -107,7 +120,13 @@ void Display::loadUpdate(uint8_t digit, LcdUpdate &update)
     auto file = fs.open(path, "r");
     update.bufferSize = file.size() - 3;
     update.buffer = (uint8_t *)malloc(update.bufferSize);
+
     uint8_t rgb[3];
+
+    if (!update.buffer) {
+        Serial.print("malloc file buffer failed\n");
+        abort();
+    }
 
     file.readBytes((char *)rgb, 3);
     file.readBytes((char *)update.buffer, update.bufferSize);
@@ -158,5 +177,11 @@ void Display::executeUpdate(LcdUpdate &update)
     if (colorChanged != NULL)
         colorChanged(update.selectLcds, update.color);
 
-    free(update.buffer);
+    if (update.buffer) {
+        free(update.buffer);
+        update.buffer = 0;
+    } else {
+        Serial.printf("display::execute_update: tried to free null buffer\n");
+        abort();
+    }
 }

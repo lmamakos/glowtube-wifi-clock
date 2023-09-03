@@ -8,7 +8,7 @@
 #include <Ticker.h>
 #include <Timezone.h>
 #include <TimeLib.h>
-#include <DS1307RTC.h>
+#include <RTClib.h>
 #include <FS.h>
 
 #include "display.h"
@@ -26,7 +26,8 @@ public:
     }
     inline time_t getRtcTime()
     {
-        return RTC.get();
+        // return RTC.get();
+        return 0;
     }
     inline time_t getNtpTime()
     {

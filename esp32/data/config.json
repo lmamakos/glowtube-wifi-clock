@@ -5,10 +5,10 @@
         "updateInterval": 3600
     },
     "timezone": {
-        "offset": 120,
+        "offset": -300,,
         "dstEnable": true,
         "dstStart": {
-            "abbrev": "EEST",
+            "abbrev": "EDT",
             "week": 0,
             "dow": 1,
             "month": 3,
@@ -16,7 +16,7 @@
             "offset": 180
         },
         "dstEnd": {
-            "abbrev": "EET",
+            "abbrev": "EST",
             "week": 0,
             "dow": 1,
             "month": 10,
