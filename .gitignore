@@ -1,3 +1,3 @@
 esp32/.pio
-esp32/src/.vscode/*
+esp32/.vscode
 esp32/data/config.json
